@@ -1,6 +1,6 @@
-
+// Js de productos Modifica para clientes y pedidos
 $(document).ready(function() {
-    // alert("ready!");
+   
     $.ajax({
         dataType: 'json',
         url: 'categorias.php',
@@ -13,8 +13,44 @@ $(document).ready(function() {
             $('#articulos-nav').html(datos);
         }
     });
-});
+    jQuery("#a2").click(function() {
 
+
+        $("#dialog").css('visibility', 'visible');
+
+        $("#dialog").dialog({
+            modal: true,
+            title: "Datos nuevo cliente",
+            show: "blind",
+            hide: "explode",
+            buttons: {
+                'Save': function() {
+                    var datos = $("#frmcliente").serialize();
+                    alert(datos);
+                    $.ajax({
+                        dataType: 'json',
+                        url: 'articulo_nuevo.php',
+                        type: 'POST',
+                        data: datos,
+                        success: function(data) {
+                            alert(data.codigo);
+                        }
+                    });
+                    $(this).dialog('close');
+                    $('#tblclientes').trigger('reloadGrid');
+
+                },
+                'Exit': function() {
+                    //hacemos lo que se quiera y cerramos el dialog
+                    $(this).dialog('close');
+                }
+            }
+        });
+    });
+    $("#dialog").css('visibility', 'hidden');
+
+    //$("#id_new").val("1000");
+});
 function articulos(categoria, nombre) {
     //alert("Pulsado " + categoria);
     $.ajax({
@@ -31,23 +67,6 @@ function articulos(categoria, nombre) {
         }
     });
 }
-
-function articulonuevo() {
-    //alert("Articulo Nuevo");
-    datos = $('#articulonuevo').serialize();
-    alert(datos);
-    $.ajax({
-        dataType: 'json',
-        url: 'articulo_nuevo.php',
-        type: 'POST',
-        data: datos,
-        success: function(data) {
-            alert(data.codigo);
-            
-        }
-    });
-}
-
 function borrararticulo(categoria) {
     alert("Borrando articulo");
 
@@ -61,7 +80,6 @@ function borrararticulo(categoria) {
         }
     });
 }
-
 function modificararticulo(categoria) {
     $.ajax({
         dataType: 'json',
@@ -78,7 +96,6 @@ function modificararticulo(categoria) {
         }
     });
 }
-
 function modificaraphp() {
     datos = $('#articulomodificar').serialize();
     alert(datos);
