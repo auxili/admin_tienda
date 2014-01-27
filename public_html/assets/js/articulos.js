@@ -1,6 +1,6 @@
 // Js de productos Modifica para clientes y pedidos
 $(document).ready(function() {
-   
+
     $.ajax({
         dataType: 'json',
         url: 'categorias.php',
@@ -13,19 +13,19 @@ $(document).ready(function() {
             $('#articulos-nav').html(datos);
         }
     });
-    jQuery("#a2").click(function() {
 
 
+
+    jQuery("#form_insert").click(function() {
         $("#dialog").css('visibility', 'visible');
-
         $("#dialog").dialog({
             modal: true,
-            title: "Datos nuevo cliente",
+            title: "Producto nuevo",
             show: "blind",
-            hide: "explode",
+            hide: "show",
             buttons: {
                 'Save': function() {
-                    var datos = $("#frmcliente").serialize();
+                    var datos = $("#new_product_data").serialize();
                     alert(datos);
                     $.ajax({
                         dataType: 'json',
@@ -33,11 +33,17 @@ $(document).ready(function() {
                         type: 'POST',
                         data: datos,
                         success: function(data) {
-                            alert(data.codigo);
+                            //alert(datos);
+                            alert(data);
+                            articulos(data);
                         }
                     });
                     $(this).dialog('close');
-                    $('#tblclientes').trigger('reloadGrid');
+                    alert("antes del reload");
+                    $("#collapse4").trigger("reloadGrid");
+                    
+                    articulos(data.codigo);
+                    alert("despues del reload");
 
                 },
                 'Exit': function() {
@@ -48,6 +54,26 @@ $(document).ready(function() {
         });
     });
     $("#dialog").css('visibility', 'hidden');
+
+    /*jQuery("#tblclientes").jqGrid({
+        url: 'articulos_categorias.php',
+        datatype: 'json',
+        mtype: 'POST',
+        colNames: ['ID', 'NOMBRE', 'PRECIO', 'CODIGO'],
+        colModel: [
+            {name: 'id', index: 'id', width: 50, resizable: false, align: "center"},
+            {name: 'nombre', index: 'nombre', width: 160, resizable: false, sortable: true},
+            {name: 'precio', index: 'precio', width: 150},
+            {name: 'codigo', index: 'codigo', width: 120}
+        ],
+        pager: '#paginacion',
+        rowNum: 10,
+        rowList: [15, 30],
+        sortname: 'id',
+        sortorder: 'asc',
+        viewrecords: true,
+        caption: 'Listado de Clientes'
+    });*/
 
     //$("#id_new").val("1000");
 });
@@ -60,25 +86,29 @@ function articulos(categoria, nombre) {
         success: function(data) {
             datos = '<thead><tr><th>ID_Producto</th><th>Nombre</th><th>Precio</th><th>Vista Previa</th></tr></thead><tbody>';
             $.each(data, function(index) {
-                datos += '<tr><td>' + data[index].id + '</td><td>' + data[index].nombre + '</td><td>' + data[index].precio + '</td><td><img src=./assets/img/' + data[index].id + '.jpg' + '></td><td><a href="javascript:modificararticulo(\'' + data[index].id + '\')"><i class="icon-edit"></i></a></td><td><a href="javascript:borrararticulo(\'' + data[index].id + '\')"><i class="icon-remove"></i></a></td></tr>';
+                datos += '<tr><td>' + data[index].id + '</td><td>' + data[index].nombre + '</td><td>' + data[index].precio + '</td><td><img src=./assets/img/' + data[index].id + '.jpg' + '></td><td><a href=# id="form_insert2">Nuevo Producto</a><a href="javascript:modificararticulo(\'' + data[index].id + '\')"><i class="icon-edit"></i></a></td><td><a href="javascript:borrararticulo(\'' + data[index].id + '\')"><i class="icon-remove"></i></a></td></tr>';
             });
             datos += '</tbody></table></div>';
             $('#dataTable').html(datos);
         }
     });
+
 }
-function borrararticulo(categoria) {
+function borrararticulo(id) {
     alert("Borrando articulo");
 
     $.ajax({
         dataType: 'json',
         type: 'GET',
-        url: 'borrararticulo.php?id=' + categoria,
+        url: 'borrararticulo.php?id=' + id,
         data: datos,
         success: function(data) {
-            alert(data.codigo);
+            //alert(categoria);
+            
         }
     });
+    alert("categoria modificada"  + categoria)
+    articulos(categoria);
 }
 function modificararticulo(categoria) {
     $.ajax({
